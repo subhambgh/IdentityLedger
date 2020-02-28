@@ -3,6 +3,7 @@ import IPFSInboxContract from "./IPFSInbox.json";
 import getWeb3 from "./getWeb3";
 import truffleContract from "truffle-contract";
 import ipfs from "./ipfs";
+import encryptMessage from "./encrypt";
 import "./App.css";
 
 class App extends Component {
@@ -16,10 +17,13 @@ class App extends Component {
       ipfsHash: null,
       formIPFS: "",
       formAddress: "",
+      formPublicKey: "",
+      encryptedIPFS: "",
       receivedIPFS: ""
     };
 
     this.handleChangeAddress = this.handleChangeAddress.bind(this);
+    this.handleChangePublicKey = this.handleChangePublicKey.bind(this);
     this.handleChangeIPFS = this.handleChangeIPFS.bind(this);
     this.handleSend = this.handleSend.bind(this);
     this.handleReceiveIPFS = this.handleReceiveIPFS.bind(this);
@@ -55,6 +59,10 @@ class App extends Component {
   };
 
   // BELOW ADDED
+  handleChangePublicKey(event) {
+    this.setState({ formPublicKey: event.target.value });
+  }
+
   handleChangeAddress(event) {
     this.setState({ formAddress: event.target.value });
   }
@@ -67,15 +75,23 @@ class App extends Component {
     event.preventDefault();
     const contract = this.state.contract;
     const account = this.state.accounts[0];
-
-    document.getElementById("new-notification-form").reset();
-    this.setState({ showNotification: true });
-    contract
-      .sendIPFS(this.state.formAddress, this.state.formIPFS, { from: account })
-      .then(result => {
-        this.setState({ formAddress: "" });
-        this.setState({ formIPFS: "" });
-      });
+    encryptMessage(this.state.formPublicKey, this.state.formIPFS).then(
+      result => {
+        this.setState({ encryptedIPFS: result });
+        document.getElementById("new-notification-form").reset();
+        this.setState({ showNotification: true });
+        console.log(this.state.encryptedIPFS);
+        contract
+          .sendIPFS(this.state.formAddress, this.state.encryptedIPFS, {
+            from: account
+          })
+          .then(result => {
+            console.log("hello");
+            this.setState({ formAddress: "" });
+            this.setState({ formIPFS: "" });
+          });
+      }
+    );
   }
 
   handleReceiveIPFS(event) {
@@ -138,6 +154,14 @@ class App extends Component {
               type="text"
               value={this.state.value}
               onChange={this.handleChangeAddress}
+            />
+          </label>
+          <label>
+            Public Key:
+            <input
+              type="text"
+              value={this.state.value}
+              onChange={this.handleChangePublicKey}
             />
           </label>
           <label>

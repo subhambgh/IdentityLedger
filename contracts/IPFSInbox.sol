@@ -2,7 +2,6 @@ pragma solidity ^0.4.23;
 contract IPFSInbox {
     // Structures
     mapping(address => string) ipfsInbox;
-    //receiver_add              //sender_add
     //mapping(address => mapping(address => string)) ipfsInbox;
     // Events
     event ipfsSent(string _ipfsHash, address _address);
