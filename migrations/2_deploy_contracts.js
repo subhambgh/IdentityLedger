@@ -1,4 +1,4 @@
-var IPFSInbox = artifacts.require("./IPFSInbox.sol");
+var IdentityLedger = artifacts.require("./IdentityLedger.sol");
 module.exports = function(deployer) {
-  deployer.deploy(IPFSInbox);
+  deployer.deploy(IdentityLedger);
 };

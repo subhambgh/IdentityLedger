@@ -1,5 +1,3 @@
-const { publicKeyConvert } = require("secp256k1");
-const { encrypt, decrypt } = require("eccrypto");
 const EthCrypto = require("eth-crypto");
 
 const encryptMessage = async (pubKey, message) => {
@@ -20,4 +18,4 @@ const decryptMessage = async (privKey, encryptedString) => {
   return decrypted;
 };
 
-export default encryptMessage;
+export { encryptMessage, decryptMessage };
